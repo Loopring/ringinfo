@@ -1,5 +1,5 @@
 import fetch from 'dva/fetch';
-
+const crypto = require('crypto');
 
 function checkStatus(res) {
   // TODO
@@ -21,19 +21,19 @@ let checkHost = ()=>{
 
 function request(options) {
   checkHost()
-  let url = window.LOOPRING_PROVIDER_HOST 
+  let url = window.LOOPRING_PROVIDER_HOST
 
   let method
   if(options.body){
-    method = options.body.method
-    options.body.id = '1' // TODO ?
+    method = options.body.method;
+    options.body.id = id();
     options.body = JSON.stringify(options.body)
   }
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
     .then(res=>{
-      console.log(`${method} response:`,res)
+      console.log(`${method} response:`,res);
       if (res.error){
           throw new Error('res error: '+ res.error.message)
       }
@@ -44,5 +44,8 @@ function request(options) {
     // })
 }
 
+function id() {
+    return crypto.randomBytes(8).toString('hex');
+}
 
 export default request;
